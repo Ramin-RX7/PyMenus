@@ -65,7 +65,7 @@ class Menu(BaseModel):
             (tuple) If an argument is selected a tuple of function and kwargs will
             be returned else it will be empty
         """
-        if self._display_prompt() is None:
+        if self._display_prompt() is False:
             return ()
         if (selection := self._prompt()) is None:
             return ()
