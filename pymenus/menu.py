@@ -1,27 +1,24 @@
-from dataclasses import dataclass
-from typing import Callable,Any,Literal
+from typing import Callable,Any,Optional
 
 import rx7 as rx
+from pydantic import BaseModel,validator
 
 
 
 
 
-@dataclass
-class Option:
+class Option(BaseModel):
     """
     Option object takes a `title` to be shown in the menus and when selected in a menu,
     it will call the given `function` with given `kwargs`
     """
-    def __init__(self, title, function, kwargs:dict[str,Any]={}):
-        self.title = title
-        self.function = function
-        self.kwargs = kwargs
+    title:str
+    function:Callable
+    kwargs: dict[str,Any] = {}
 
 
 
-@dataclass
-class Menu:
+class Menu(BaseModel):
     """
     Menu object prompts the user to navigate to different sub-menus/options of the app.
 
@@ -40,18 +37,17 @@ class Menu:
 
         options (list[Option]): options user can choose beside sub-menus, default: [ ]
     """
-    def __init__(self,
-                title: str,
-                prompt_text: str = None,
-                sub_menus: list["Menu"] = [],
-                options: list[Option] = []):
-        self.title = title
-        self.sub_menus = sub_menus
-        self.options = options
-        if prompt_text is None:
-            self.prompt_text = prompt_text
+    title: str
+    prompt_text: Optional[str] = None
+    sub_menus: list["Menu"] = []
+    options: list[Option] = []
+
+    @validator("prompt_text", always=True)
+    def _validate_prompt_text(cls, value, values):
+        if value is None:
+            return values["title"] + "> "
         else:
-            self.prompt_text = title + "> "
+            return value
 
     def __repr__(self) -> str:
         menus = [menu.title for menu in self.sub_menus]
