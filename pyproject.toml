@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyMenus"
+version = "0.0.1"
+description = "Easy "
+license = {text = "LGPL"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "rx7"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+authors = [
+    {name = "Ramin-RX7", email = "rawmin.rx@gmail.com"},
+]
+
+[tool.setuptools]
+packages = ["pymenus"]
+
+[project.urls]
+"Homepage" = "https://github.com/Ramin-RX7/PyMenus"
+repository = "https://github.com/Ramin-RX7/PyMenus"
+# "Bug Tracker" = "https://github.com/Ramin-RX7/PyMenus/issues"
+# documentation = "https://github.com/Ramin-RX7/PyMenus/wiki"
+# changelog = "https://github.com/Ramin-RX7/PyMenus/blob/master/CHANGELOG.md"
