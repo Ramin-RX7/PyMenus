@@ -13,9 +13,10 @@ class Option:
     Option object takes a `title` to be shown in the menus and when selected in a menu,
     it will call the given `function` with given `kwargs`
     """
-    title:str
-    function:Callable
-    kwargs: dict[str,Any] = {}
+    def __init__(self, title, function, kwargs:dict[str,Any]={}):
+        self.title = title
+        self.function = function
+        self.kwargs = kwargs
 
 
 
