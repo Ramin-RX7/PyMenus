@@ -6,6 +6,19 @@ from pydantic import BaseModel,validator
 
 
 
+def default_config(sub_menus:list["Menu"], options:list["Option"]):
+    config = []
+    if sub_menus:
+        config.append("Menus:")
+        for i,menu in enumerate(sub_menus, 1):
+            config.append(f"   {i}. {menu.title}")
+    if options:
+        config.append("Options:")
+        for i,option in enumerate(options, len(sub_menus)+1):
+            config.append(f"   {i}. {option.title}")
+    config.append(f"\n   0. Back\n")
+    return config
+
 
 class Option(BaseModel):
     """
@@ -41,6 +54,7 @@ class Menu(BaseModel):
     prompt_text: Optional[str] = None
     sub_menus: list["Menu"] = []
     options: list[Option] = []
+    config: Optional[list["Menu",Option,str,int]] = None
 
     @validator("prompt_text", always=True)
     def _validate_prompt_text(cls, value, values):
@@ -48,6 +62,16 @@ class Menu(BaseModel):
             return values["title"] + "> "
         else:
             return value
+
+    @validator("config", always=True)
+    def _validate_config(cls, config, values):
+        if config is None:
+            return default_config(values['sub_menus'], values['options'])
+        else:
+            for section in config:
+                if not isinstance(section, (Menu,Option,str,int)):
+                    raise TypeError(f"Wrong value in menu config ({values['title']})")
+            return config
 
     def __repr__(self) -> str:
         menus = [menu.title for menu in self.sub_menus]
