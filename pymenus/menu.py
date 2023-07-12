@@ -181,6 +181,7 @@ class Menu(BaseModel):
         Raises:
             TypeError: if sub_menus are not instances of `Menu`
         """
+        assert (not self._structure), "Can not add submenu when menu is created via structure"
         for menu in sub_menus:
             assert isinstance(menu, Menu), f"sub_menus should be instances of `{self.__class__.__qualname__}`"
             self.sub_menus.append(menu)
@@ -191,6 +192,7 @@ class Menu(BaseModel):
         Raises:
             TypeError: if options are not instances of `Option`
         """
+        assert (not self._structure), "Can not add options when menu is created via structure"
         for option in options:
             assert isinstance(option, Option), f"options should be instances of `{Option.__qualname__}`"
             self.options.append(option)
