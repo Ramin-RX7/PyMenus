@@ -205,3 +205,10 @@ class Menu(BaseModel):
             "options"     :  [Option(**option) for option in dictionary.get("options",[])]
         }
         return cls(**menu)
+
+    @classmethod
+    def parse_structure(cls, title, structure:list["Menu",Option,str,int], prompt_text=None):
+        menu =  cls(title=title, prompt_text=prompt_text)
+        Menu._validate_structure(structure, title=title)
+        menu._structure = structure
+        return menu
