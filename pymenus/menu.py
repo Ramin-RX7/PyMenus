@@ -11,12 +11,13 @@ def default_structure(sub_menus:list["Menu"], options:list["Option"]):
     if sub_menus:
         structure.append("Menus:")
         for i,menu in enumerate(sub_menus, 1):
-            structure.append(f"   {i}. {menu.title}")
+            structure.append(menu)
     if options:
         structure.append("Options:")
         for i,option in enumerate(options, len(sub_menus)+1):
-            structure.append(f"   {i}. {option.title}")
-    structure.append(f"\n   0. Back\n")
+            structure.append(option)
+    structure.append(0)
+
     return structure
 
 
