@@ -6,18 +6,18 @@ from pydantic import BaseModel,validator
 
 
 
-def default_config(sub_menus:list["Menu"], options:list["Option"]):
-    config = []
+def default_structure(sub_menus:list["Menu"], options:list["Option"]):
+    structure = []
     if sub_menus:
-        config.append("Menus:")
+        structure.append("Menus:")
         for i,menu in enumerate(sub_menus, 1):
-            config.append(f"   {i}. {menu.title}")
+            structure.append(f"   {i}. {menu.title}")
     if options:
-        config.append("Options:")
+        structure.append("Options:")
         for i,option in enumerate(options, len(sub_menus)+1):
-            config.append(f"   {i}. {option.title}")
-    config.append(f"\n   0. Back\n")
-    return config
+            structure.append(f"   {i}. {option.title}")
+    structure.append(f"\n   0. Back\n")
+    return structure
 
 
 class Option(BaseModel):
@@ -54,7 +54,8 @@ class Menu(BaseModel):
     prompt_text: Optional[str] = None
     sub_menus: list["Menu"] = []
     options: list[Option] = []
-    config: Optional[list["Menu",Option,str,int]] = None
+    _structure = None
+
 
     @validator("prompt_text", always=True)
     def _validate_prompt_text(cls, value, values):
@@ -63,15 +64,16 @@ class Menu(BaseModel):
         else:
             return value
 
-    @validator("config", always=True)
-    def _validate_config(cls, config, values):
-        if config is None:
-            return default_config(values['sub_menus'], values['options'])
+    # @validator("_structure", always=True)
+    @classmethod
+    def _validate_structure(cls, structure, **values):
+        if structure is None:
+            return None#default_structure(values['sub_menus'], values['options'])
         else:
-            for section in config:
+            for section in structure:
                 if not isinstance(section, (Menu,Option,str,int)):
-                    raise TypeError(f"Wrong value in menu config ({values['title']})")
-            return config
+                    raise TypeError(f"Wrong value in menu structure ({values['title']})")
+            return structure
 
     def __repr__(self) -> str:
         menus = [menu.title for menu in self.sub_menus]
