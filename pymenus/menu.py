@@ -105,15 +105,21 @@ class Menu(BaseModel):
             print("Empty Menu")
             rx.getpass("\nPress enter to continue...")
             return False
-        if self.sub_menus:
-            print("Menus:")
-            for i,menu in enumerate(self.sub_menus, 1):
-                print(f"   {i}. {menu.title}")
-        if self.options:
-            print("Options:")
-            for i,option in enumerate(self.options, len(self.sub_menus)+1):
-                print(f"   {i}. {option.title}")
-        print(f"\n   0. Back\n")
+        structure = self._structure or default_structure(self.sub_menus,self.options)
+        if not all([isinstance(section,(Menu,Option,str,int)) for section in structure]):
+            raise TypeError(f"Wrong value in menu structure ({self.title})")
+
+        i = 1
+        for section in structure:
+            if isinstance(section, (Menu,Option)):
+                print(f"   {i}) {section.title}")
+                i+=1
+            elif isinstance(section,str):
+                print(section)
+            elif isinstance(section,int):
+                if section != 0:
+                    raise ValueError(f"Invalid structure: `{section}` in menu `{self.title}`")
+                print(f"\n   0) Back")
         return True
 
     def _prompt(self) -> int|None:
