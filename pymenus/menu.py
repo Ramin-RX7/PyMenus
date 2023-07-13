@@ -92,15 +92,16 @@ class Menu(BaseModel):
             (tuple) If an argument is selected a tuple of function and kwargs will
             be returned else it will be empty
         """
-        if self._display_prompt() is False:
+        if (structure := self._display_prompt()) is False:
             return ()
-        if (selection := self._prompt()) is None:
-            return ()
-        if (response := self._handle_input(selection)) is None:
-            return ()
+        if (selection := self._prompt(structure)) is None:
+            return None
+        # if (response := self._handle_input(structure, selection)) is None:
+            # return ()
+        response = self._handle_input(structure, selection)
         return response
 
-    def _display_prompt(self) -> bool:
+    def _display_prompt(self) -> list[Any]:
         if not any([self.sub_menus,self.options]):
             print("Empty Menu")
             rx.getpass("\nPress enter to continue...")
@@ -110,9 +111,11 @@ class Menu(BaseModel):
             raise TypeError(f"Wrong value in menu structure ({self.title})")
 
         i = 1
+        user_input_structure = {}
         for section in structure:
             if isinstance(section, (Menu,Option)):
                 print(f"   {i}) {section.title}")
+                user_input_structure[i] = section
                 i+=1
             elif isinstance(section,str):
                 print(section)
@@ -120,30 +123,31 @@ class Menu(BaseModel):
                 if section != 0:
                     raise ValueError(f"Invalid structure: `{section}` in menu `{self.title}`")
                 print(f"\n   0) Back")
-        return True
+                user_input_structure[0] = 0
+        return user_input_structure
 
-    def _prompt(self) -> int|None:
+    def _prompt(self, structure:dict=None) -> int|None:
         try:
             choice = rx.io.selective_input(
                 self.prompt_text,
-                choices = [str(i) for i in range(len(self.sub_menus)+len(self.options)+1)],
+                choices = [str(i) for i in structure.keys()],
                 post_action = int
             )
         except (EOFError, KeyboardInterrupt):
             return None
         return choice
 
-    def _handle_input(self, number:int) -> tuple[Callable|"Menu", dict] | None:
+    def _handle_input(self, input_structure:dict[int,Any], number:int) -> tuple[Callable|"Menu", dict] | None | False:
         if number is None:
             return None
+        assert number in input_structure, "Internal error in _prompt() and _handle_input()"
         if number == 0:
-            return None
-        elif number <= len(self.sub_menus):
-            sub_menu = self.sub_menus[number-1]
-            return (sub_menu, {})
-        else:
-            option = self.options[number-len(self.sub_menus)-1]
-            return (option.function, option.kwargs)
+            return False
+        selected_option = input_structure[number]
+        if isinstance(selected_option, Menu):
+            return (selected_option, {})
+        elif isinstance(selected_option, Option):
+            return (selected_option.function, selected_option.kwargs)
 
 
     def execute(self, **kwargs) -> None:
