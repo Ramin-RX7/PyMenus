@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "PyMenus"
 version = "0.0.1"
-description = "Easy "
+description = "Flexible cli menu creator"
 license = {text = "LGPL"}
 readme = "README.md"
 requires-python = ">=3.10"
@@ -24,7 +24,6 @@ packages = ["pymenus"]
 
 [project.urls]
 "Homepage" = "https://github.com/Ramin-RX7/PyMenus"
-repository = "https://github.com/Ramin-RX7/PyMenus"
-# "Bug Tracker" = "https://github.com/Ramin-RX7/PyMenus/issues"
-# documentation = "https://github.com/Ramin-RX7/PyMenus/wiki"
+"Bug Tracker" = "https://github.com/Ramin-RX7/PyMenus/issues"
+documentation = "https://github.com/Ramin-RX7/PyMenus/#PyMenus"
 # changelog = "https://github.com/Ramin-RX7/PyMenus/blob/master/CHANGELOG.md"
