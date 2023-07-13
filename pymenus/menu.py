@@ -70,13 +70,10 @@ class Menu(BaseModel):
     # @validator("_structure", always=True)
     @classmethod
     def _validate_structure(cls, structure, **values):
-        if structure is None:
-            return None#default_structure(values['sub_menus'], values['options'])
-        else:
-            for section in structure:
-                if not isinstance(section, (Menu,Option,str,int)):
-                    raise TypeError(f"Wrong value in menu structure ({values['title']})")
-            return structure
+        for section in structure:
+            if not isinstance(section, (Menu,Option,str,int)):
+                raise TypeError(f"Wrong value in menu structure ({values['title']})")
+        return structure
 
     def __repr__(self) -> str:
         menus = [menu.title for menu in self.sub_menus]
@@ -87,10 +84,8 @@ class Menu(BaseModel):
 
     def __setattr__(self, attr, value):
         if attr == "_structure":
-            print("set the structure")
             object.__setattr__(self,attr,value)
         else:
-            print("set something else")
             super().__setattr__(attr,value)
 
     def get_user_input(self) -> tuple["Menu"|Callable,dict] | tuple[()]:
