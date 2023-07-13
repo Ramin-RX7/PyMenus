@@ -83,6 +83,13 @@ class Menu(BaseModel):
     def __str__(self) -> str:
         return repr(self)
 
+    def __setattr__(self, attr, value):
+        if attr == "_structure":
+            print("set the structure")
+            object.__setattr__(self,attr,value)
+        else:
+            print("set something else")
+            super().__setattr__(attr,value)
 
     def get_user_input(self) -> tuple["Menu"|Callable,dict] | tuple[()]:
         """prompts user input with handling everything related to it.
@@ -93,7 +100,7 @@ class Menu(BaseModel):
             be returned else it will be empty
         """
         if (structure := self._display_prompt()) is False:
-            return ()
+            return False
         if (selection := self._prompt(structure)) is None:
             return None
         # if (response := self._handle_input(structure, selection)) is None:
@@ -102,7 +109,7 @@ class Menu(BaseModel):
         return response
 
     def _display_prompt(self) -> list[Any]:
-        if not any([self.sub_menus,self.options]):
+        if not any([self.sub_menus,self.options,self._structure]):
             print("Empty Menu")
             rx.getpass("\nPress enter to continue...")
             return False
@@ -137,7 +144,7 @@ class Menu(BaseModel):
             return None
         return choice
 
-    def _handle_input(self, input_structure:dict[int,Any], number:int) -> tuple[Callable|"Menu", dict] | None | False:
+    def _handle_input(self, input_structure:dict[int,Any], number:int) -> tuple[Callable|"Menu", dict] | None:
         if number is None:
             return None
         assert number in input_structure, "Internal error in _prompt() and _handle_input()"
