@@ -4,6 +4,8 @@ import rx7 as rx
 from pydantic import BaseModel,validator
 
 
+BACK_BUTTON = 0
+SEPARATOR = "   -------"
 
 
 def default_structure(sub_menus:list["Menu"], options:list["Option"]):
@@ -16,7 +18,7 @@ def default_structure(sub_menus:list["Menu"], options:list["Option"]):
         structure.append("Options:")
         for i,option in enumerate(options, len(sub_menus)+1):
             structure.append(option)
-    structure.append(0)
+    structure.append(BACK_BUTTON)
 
     return structure
 
@@ -127,10 +129,10 @@ class Menu(BaseModel):
             elif isinstance(section,str):
                 print(section)
             elif isinstance(section,int):
-                if section != 0:
+                if section != BACK_BUTTON:
                     raise ValueError(f"Invalid structure: `{section}` in menu `{self.title}`")
                 print("   0) Back")
-                user_input_structure[0] = 0
+                user_input_structure[0] = BACK_BUTTON
         return user_input_structure
 
     def _prompt(self, structure:dict=None) -> int|None:
