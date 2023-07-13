@@ -164,8 +164,10 @@ class Menu(BaseModel):
         """
         rx.clear()
         selected_option = self.get_user_input()
-        if not selected_option:
+        if selected_option is False:
             return
+        elif selected_option is None:
+            exit()
 
         function,defined_kwargs = selected_option
         if isinstance(function, Menu):
