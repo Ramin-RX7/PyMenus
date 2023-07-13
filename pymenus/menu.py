@@ -129,11 +129,12 @@ class Menu(BaseModel):
             elif isinstance(section,int):
                 if section != 0:
                     raise ValueError(f"Invalid structure: `{section}` in menu `{self.title}`")
-                print(f"\n   0) Back")
+                print("   0) Back")
                 user_input_structure[0] = 0
         return user_input_structure
 
     def _prompt(self, structure:dict=None) -> int|None:
+        print()
         try:
             choice = rx.io.selective_input(
                 self.prompt_text,
