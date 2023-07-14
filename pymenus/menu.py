@@ -1,4 +1,5 @@
-from typing import Callable,Any,Optional
+from abc import abstractmethod
+from typing import Callable,Any,Optional,final
 
 import rx7 as rx
 from pydantic import BaseModel,validator
@@ -34,7 +35,124 @@ class Option(BaseModel):
 
 
 
-class Menu(BaseModel):
+class _BaseMenu:
+    @abstractmethod
+    def __repr__(self) -> str:
+        ...
+
+    @abstractmethod
+    def _display_prompt(self) -> Any|None:
+        """
+        Prints out the menu appearance (like sub-menus,options,etc.).
+
+        It will take no arguments.
+
+        Returns:
+            `None` : Exit the app
+
+            `False`: Moves back
+
+            anything else returned by this function will be passed to _prompt()
+        """
+        ...
+
+    @abstractmethod
+    def _prompt(self, _display_prompt_return) -> Any|None:
+        """
+        Asks for user input.
+
+        This function only takes one argument and that is the return of _display_prompt.
+
+        Returns:
+            `None`: close the app.
+
+            `False`: Moves back
+
+            anything else: the return of `_display_prompt()` and this
+            function will be sent to `_handle_input()` as arguments
+        """
+        ...
+
+    @abstractmethod
+    def _handle_input(self, _display_prompt_return, _prompt_return) -> Any|None:
+        """
+        This function handles the user input given in `_prompt()`
+
+        It takes two arguments. First one is the return of
+        `_display_prompt()` and the second one is the return of `_prompt()`
+
+        Returns:
+            `False`: Moves back
+
+            `None`: Exits the app
+
+            tuple: Must contains two elements.
+            First one must be a `_BaseMenu` or `Option` instance.
+            Second element is the kwargs of it (dict).
+        """
+        ...
+
+
+    @final
+    def get_user_input(self):
+        """prompts user input with handling everything related to it.
+        (Recommened not to be called externally)
+
+        Returns:
+            `None`: Exits the app
+
+            `False`: Move back
+
+            tuple: Must contains two elements.
+            First one must be a _BaseMenu or Option instance.
+            Second element is the kwargs of it (dict).
+        """
+        if (_display_prompt := self._display_prompt()) in (False,None):
+            return _display_prompt
+        if (_prompt := self._prompt(_display_prompt)) in (False,None):
+            return _prompt
+        response = self._handle_input(_display_prompt, _prompt)
+        return response
+
+
+    @final
+    def execute(self, **kwargs) -> None:
+        """
+        This method shoud be called to start the menu.
+
+        All changes applied to the instances such as modifications of
+        sub-menu list will be applied in the next call of this method
+
+        Args:
+            **kwargs:
+                if arguments of the given sub-menus/option have been modified during runtime,
+                you can pass them to this method
+        """
+        rx.clear()
+        selected_option = self.get_user_input()
+        if selected_option == False:
+            return
+        elif selected_option is None:
+            exit()
+        to_call,defined_kwargs = selected_option
+        if isinstance(to_call, self.__class__):
+            to_call.execute(**(kwargs if kwargs else defined_kwargs))
+        elif isinstance(to_call, Option):
+            rx.cls()
+            to_call.function(**(kwargs if kwargs else defined_kwargs))
+            rx.getpass("\nPress enter to continue...")
+        else:
+            print(selected_option)
+            raise TypeError("Invalid type returned by `get_user_input()`")
+
+        self.execute(**kwargs)
+
+
+
+
+
+
+class Menu(BaseModel,_BaseMenu):
     """
     Menu object prompts the user to navigate to different sub-menus/options of the app.
 
@@ -88,23 +206,6 @@ class Menu(BaseModel):
         else:
             super().__setattr__(attr,value)
 
-    def get_user_input(self) -> tuple["Menu"|Callable,dict] | tuple[()]:
-        """prompts user input with handling everything related to it.
-        (Recommened not to be called externally)
-
-        Returns:
-            (tuple) If an argument is selected a tuple of function and kwargs will
-            be returned else it will be empty
-        """
-        if (structure := self._display_prompt()) is False:
-            return False
-        if (selection := self._prompt(structure)) is None:
-            return None
-        # if (response := self._handle_input(structure, selection)) is None:
-            # return ()
-        response = self._handle_input(structure, selection)
-        return response
-
     def _display_prompt(self) -> list[Any]:
         if not any([self.sub_menus,self.options,self._structure]):
             print("Empty Menu")
@@ -153,36 +254,6 @@ class Menu(BaseModel):
             return (selected_option, {})
         elif isinstance(selected_option, Option):
             return (selected_option.function, selected_option.kwargs)
-
-
-    def execute(self, **kwargs) -> None:
-        """
-        This method shoud be called to start the menu.
-
-        All changes applied to the instances such as modifications of
-        sub-menu list will be applied in the next call of this method
-
-        Args:
-            **kwargs:
-                if arguments of the given sub-menus/option have been modified during runtime,
-                you can pass them to this method
-        """
-        rx.clear()
-        selected_option = self.get_user_input()
-        if selected_option is False:
-            return
-        elif selected_option is None:
-            exit()
-
-        function,defined_kwargs = selected_option
-        if isinstance(function, Menu):
-            function.execute(**(kwargs if kwargs else defined_kwargs))
-        else:
-            rx.cls()
-            function(**(kwargs if kwargs else defined_kwargs))
-            rx.getpass("\nPress enter to continue...")
-
-        self.execute(**kwargs)
 
 
     def add_submenus(self, *sub_menus:"Menu") -> None:
