@@ -35,7 +35,7 @@ class Option(BaseModel):
 
 
 
-class _BaseMenu:
+class _BaseMenu(BaseModel):
     @abstractmethod
     def __repr__(self) -> str:
         ...
@@ -152,7 +152,7 @@ class _BaseMenu:
 
 
 
-class Menu(BaseModel,_BaseMenu):
+class Menu(_BaseMenu):
     """
     Menu object prompts the user to navigate to different sub-menus/options of the app.
 
