@@ -135,20 +135,16 @@ class _BaseMenu(BaseModel):
         elif selected_option is None:
             exit()
         to_call,defined_kwargs = selected_option
-        if isinstance(to_call, self.__class__):
+        if isinstance(to_call, _BaseMenu):
             to_call.execute(**(kwargs if kwargs else defined_kwargs))
         elif isinstance(to_call, Option):
             rx.cls()
             to_call.function(**(kwargs if kwargs else defined_kwargs))
             rx.getpass("\nPress enter to continue...")
         else:
-            print(selected_option)
             raise TypeError("Invalid type returned by `get_user_input()`")
 
         self.execute(**kwargs)
-
-
-
 
 
 
