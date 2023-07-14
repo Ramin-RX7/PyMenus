@@ -242,6 +242,9 @@ class Menu(_BaseMenu):
         }
         return cls(**menu)
 
+    @classmethod
+    def structural(cls, title:str, structure:list):
+        return StructuralMenu(title=title, structure=structure)
 
 
 class StructuralMenu(_BaseMenu):
