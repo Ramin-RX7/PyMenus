@@ -9,21 +9,6 @@ BACK_BUTTON = 0
 SEPARATOR = "   -------"
 
 
-def default_structure(sub_menus:list["Menu"], options:list["Option"]):
-    structure = []
-    if sub_menus:
-        structure.append("Menus:")
-        for i,menu in enumerate(sub_menus, 1):
-            structure.append(menu)
-    if options:
-        structure.append("Options:")
-        for i,option in enumerate(options, len(sub_menus)+1):
-            structure.append(option)
-    structure.append(BACK_BUTTON)
-
-    return structure
-
-
 class Option(BaseModel):
     """
     Option object takes a `title` to be shown in the menus and when selected in a menu,
@@ -171,8 +156,6 @@ class Menu(_BaseMenu):
     prompt_text: Optional[str] = None
     sub_menus: list["Menu"] = []
     options: list[Option] = []
-    _structure = None
-
 
     @validator("prompt_text", always=True)
     def _validate_prompt_text(cls, value, values):
@@ -181,14 +164,6 @@ class Menu(_BaseMenu):
         else:
             return value
 
-    # @validator("_structure", always=True)
-    @classmethod
-    def _validate_structure(cls, structure, **values):
-        for section in structure:
-            if not isinstance(section, (Menu,Option,str,int)):
-                raise TypeError(f"Wrong value in menu structure ({values['title']})")
-        return structure
-
     def __repr__(self) -> str:
         menus = [menu.title for menu in self.sub_menus]
         options = [option.title for option in self.options]
@@ -196,60 +171,43 @@ class Menu(_BaseMenu):
     def __str__(self) -> str:
         return repr(self)
 
-    def __setattr__(self, attr, value):
-        if attr == "_structure":
-            object.__setattr__(self,attr,value)
-        else:
-            super().__setattr__(attr,value)
 
-    def _display_prompt(self) -> list[Any]:
-        if not any([self.sub_menus,self.options,self._structure]):
+    def _display_prompt(self) -> bool:
+        if not any([self.sub_menus,self.options]):
             print("Empty Menu")
             rx.getpass("\nPress enter to continue...")
             return False
-        structure = self._structure or default_structure(self.sub_menus,self.options)
-        if not all([isinstance(section,(Menu,Option,str,int)) for section in structure]):
-            raise TypeError(f"Wrong value in menu structure ({self.title})")
+        if self.sub_menus:
+            print("Menus:")
+            for i,menu in enumerate(self.sub_menus, 1):
+                print(f"   {i}. {menu.title}")
+        if self.options:
+            print("Options:")
+            for i,option in enumerate(self.options, len(self.sub_menus)+1):
+                print(f"   {i}. {option.title}")
+        print(f"\n   0. Back\n")
+        return True
 
-        i = 1
-        user_input_structure = {}
-        for section in structure:
-            if isinstance(section, (Menu,Option)):
-                print(f"   {i}) {section.title}")
-                user_input_structure[i] = section
-                i+=1
-            elif isinstance(section,str):
-                print(section)
-            elif isinstance(section,int):
-                if section != BACK_BUTTON:
-                    raise ValueError(f"Invalid structure: `{section}` in menu `{self.title}`")
-                print("   0) Back")
-                user_input_structure[0] = BACK_BUTTON
-        return user_input_structure
-
-    def _prompt(self, structure:dict=None) -> int|None:
-        print()
+    def _prompt(self, _display_prompt_return) -> int|None:
         try:
             choice = rx.io.selective_input(
                 self.prompt_text,
-                choices = [str(i) for i in structure.keys()],
+                choices = [str(i) for i in range(len(self.sub_menus)+len(self.options)+1)],
                 post_action = int
             )
         except (EOFError, KeyboardInterrupt):
             return None
         return choice
 
-    def _handle_input(self, input_structure:dict[int,Any], number:int) -> tuple[Callable|"Menu", dict] | None:
-        if number is None:
-            return None
-        assert number in input_structure, "Internal error in _prompt() and _handle_input()"
+    def _handle_input(self, _display_prompt_return, number:int) -> tuple[_BaseMenu|Option, dict] | None:
         if number == 0:
             return False
-        selected_option = input_structure[number]
-        if isinstance(selected_option, Menu):
-            return (selected_option, {})
-        elif isinstance(selected_option, Option):
-            return (selected_option, selected_option.kwargs)
+        elif number <= len(self.sub_menus):
+            sub_menu = self.sub_menus[number-1]
+            return (sub_menu, {})
+        else:
+            option = self.options[number-len(self.sub_menus)-1]
+            return (option.function, option.kwargs)
 
 
     def add_submenus(self, *sub_menus:"Menu") -> None:
@@ -259,7 +217,6 @@ class Menu(_BaseMenu):
         Raises:
             TypeError: if sub_menus are not instances of `Menu`
         """
-        assert (not self._structure), "Can not add submenu when menu is created via structure"
         for menu in sub_menus:
             assert isinstance(menu, Menu), f"sub_menus should be instances of `{self.__class__.__qualname__}`"
             self.sub_menus.append(menu)
@@ -270,7 +227,6 @@ class Menu(_BaseMenu):
         Raises:
             TypeError: if options are not instances of `Option`
         """
-        assert (not self._structure), "Can not add options when menu is created via structure"
         for option in options:
             assert isinstance(option, Option), f"options should be instances of `{Option.__qualname__}`"
             self.options.append(option)
@@ -285,13 +241,6 @@ class Menu(_BaseMenu):
             "options"     :  [Option(**option) for option in dictionary.get("options",[])]
         }
         return cls(**menu)
-
-    @classmethod
-    def parse_structure(cls, title, structure:list["Menu",Option,str,int], prompt_text=None):
-        menu =  cls(title=title, prompt_text=prompt_text)
-        Menu._validate_structure(structure, title=title)
-        menu._structure = structure
-        return menu
 
 
 
