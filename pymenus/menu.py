@@ -3,12 +3,12 @@ from typing import Optional
 import rx7 as rx
 from pydantic import validator
 
-from .base import _BaseMenu
+from .base import BaseMenu
 from .option import Option
 
 
 
-class Menu(_BaseMenu):
+class Menu(BaseMenu):
     """
     Menu object prompts the user to navigate to different sub-menus/options of the app.
 
@@ -74,7 +74,7 @@ class Menu(_BaseMenu):
             return None
         return choice
 
-    def _handle_input(self, _display_prompt_return, number:int) -> tuple[_BaseMenu|Option, dict] | None:
+    def _handle_input(self, _display_prompt_return, number:int) -> tuple[BaseMenu|Option, dict] | None:
         if number == 0:
             return False
         elif number <= len(self.sub_menus):

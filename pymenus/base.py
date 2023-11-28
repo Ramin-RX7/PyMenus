@@ -8,7 +8,7 @@ from .option import Option
 
 
 
-class _BaseMenu(BaseModel):
+class BaseMenu(BaseModel):
     @abstractmethod
     def __repr__(self) -> str:
         ...

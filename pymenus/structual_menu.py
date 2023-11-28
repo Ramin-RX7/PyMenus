@@ -3,7 +3,7 @@ from typing import Callable,Any,Optional
 import rx7 as rx
 from pydantic import validator
 
-from .base import _BaseMenu
+from .base import BaseMenu
 from .option import Option
 
 
@@ -13,7 +13,7 @@ SEPARATOR = "   -------"
 
 
 
-class StructuralMenu(_BaseMenu):
+class StructuralMenu(BaseMenu):
     """
     Menu object prompts the user to navigate to different sub-menus/options of the app.
 
@@ -44,7 +44,7 @@ class StructuralMenu(_BaseMenu):
     @validator("structure")
     def _validate_structure(cls, structure, **values):
         for section in structure:
-            if not isinstance(section, (_BaseMenu,Option,str,int)):
+            if not isinstance(section, (BaseMenu,Option,str,int)):
                 raise TypeError(f"Wrong value in menu structure ({values['title']})")
         return structure
 
@@ -59,12 +59,12 @@ class StructuralMenu(_BaseMenu):
             print("Empty Menu")
             rx.getpass("\nPress enter to continue...")
             return False
-        if not all([isinstance(section,(_BaseMenu,Option,str,int)) for section in self.structure]):
+        if not all([isinstance(section,(BaseMenu,Option,str,int)) for section in self.structure]):
             raise TypeError(f"Wrong value in menu structure ({self.title})")
 
         i = 1
         for section in self.structure:
-            if isinstance(section, (_BaseMenu,Option)):
+            if isinstance(section, (BaseMenu,Option)):
                 print(f"   {i}) {section.title}")
                 i+=1
             elif isinstance(section,str):
@@ -87,14 +87,14 @@ class StructuralMenu(_BaseMenu):
             return None
         return choice
 
-    def _handle_input(self, input_structure:dict[int,Any], number:int) -> tuple[Callable|_BaseMenu, dict] | None:
+    def _handle_input(self, input_structure:dict[int,Any], number:int) -> tuple[Callable|BaseMenu, dict] | None:
         if number is None:
             return None
         assert number in input_structure, "Internal error in _prompt() and _handle_input()"
         if number == 0:
             return False
         selected_option = input_structure[number]
-        if isinstance(selected_option, _BaseMenu):
+        if isinstance(selected_option, BaseMenu):
             return (selected_option, {})
         elif isinstance(selected_option, Option):
             return (selected_option, selected_option.kwargs)
@@ -104,7 +104,7 @@ class StructuralMenu(_BaseMenu):
         i = 1
         user_input_structure = {}
         for section in self.structure:
-            if isinstance(section, (_BaseMenu,Option)):
+            if isinstance(section, (BaseMenu,Option)):
                 user_input_structure[i] = section
                 i+=1
             elif isinstance(section,int):
