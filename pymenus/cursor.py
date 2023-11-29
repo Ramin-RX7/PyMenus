@@ -36,18 +36,23 @@ def forward(n:int=1):
 def back(n:int=1):
     stdout(f"{CE}{n}D")
 
+
+
 def move(x:int=1, y:int=1):
     stdout(f"{CE}{y};{x}H")
 
+def move_rel(x:int=0, y:int=0):
+    if x > 0:
+        forward(x)
+    elif x < 0:
+        back(x)
+    if y > 0:
+        down(y)
+    elif y < 0:
+        up(y)
 
-
-def save_position():
-    stdout(f"{CE}s")  # f"{ESCC}7"
-
-
-def restore_position():
-    stdout(f"{CE}u")  # f"{ESCC}8"
-
+def move_home():
+    stdout(f'{CE}H')
 
 @contextmanager
 def SaveCursor():  # add move to x,y
