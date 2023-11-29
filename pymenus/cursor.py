@@ -12,7 +12,9 @@ __all__ = (
     "move_rel",
     "move_home",
     "move_temporary",
-    "clear_terminal"
+    "save_position",
+    "restore_position",
+    "clear_terminal",
 )
 
 
@@ -30,11 +32,14 @@ def stdout(string):
 def up(n:int=1):
     stdout(f"{CE}{n}A")
 
+
 def down(n:int=1):
     stdout(f"{CE}{n}B")
 
+
 def forward(n:int=1):
     stdout(f"{CE}{n}C")
+
 
 def back(n:int=1):
     stdout(f"{CE}{n}D")
@@ -43,6 +48,7 @@ def back(n:int=1):
 
 def move(x:int=1, y:int=1):
     stdout(f"{CE}{y};{x}H")
+
 
 def move_rel(x:int=0, y:int=0):
     if x > 0:
@@ -54,8 +60,10 @@ def move_rel(x:int=0, y:int=0):
     elif y < 0:
         up(y)
 
+
 def move_home():
     stdout(f'{CE}H')
+
 
 @contextmanager
 def move_temporary(x=1, y=1):
