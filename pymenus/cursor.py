@@ -61,6 +61,15 @@ def SaveCursor():  # add move to x,y
 
 
 
+def save_position():
+    stdout(f"{CE}s")  # f"{ESCC}7"
+
+
+def restore_position():
+    stdout(f"{CE}u")  # f"{ESCC}8"
+
+
+
 def clear_terminal(keep_cursor:bool=False):
     """Clears the terminal environment
 
