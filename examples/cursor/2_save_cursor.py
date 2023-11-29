@@ -1,15 +1,9 @@
 from pymenus import cursor
 
-# with cursor.SaveCursor():
-#     cursor.down(3)
-#     print("hello")
-
-# print("bye")
 
 
-import sys
-def stdout(string):
-    sys.stdout.write(string)
-    sys.stdout.flush()
+with cursor.move_temporary():
+    cursor.down(3)
+    print("hello")
 
-stdout('\033[2J')
+print("bye")
