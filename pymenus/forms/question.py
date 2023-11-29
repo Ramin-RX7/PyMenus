@@ -24,13 +24,14 @@ class Question:
 
     def __call__(self, data=None) -> Any:
         while True:
+            user_input = input(self.prompt)
+            if (not user_input.strip())  and  (self.default is not None):
+                return self.default
+            validated_value = user_input
             try:
-                user_input = input(self.prompt)
-                if (not user_input.strip())  and  (self.default is not None):
-                    return self.default
-                validated_value = user_input
                 for validator in self.validators:
                     validated_value = validator(user_input, validated_value, data)
-                return validated_value
             except ValidationError:
                 print("Invalid Input\n")
+            else:
+                return validated_value
