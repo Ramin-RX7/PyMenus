@@ -9,7 +9,9 @@ __all__ = (
     "forward",
     "back",
     "move",
-    "SaveCursor",
+    "move_rel",
+    "move_home",
+    "move_temporary",
     "clear_terminal"
 )
 
@@ -21,6 +23,7 @@ CE = f'{ESC}['
 def stdout(string):
     sys.stdout.write(string)
     sys.stdout.flush()
+
 
 
 
@@ -55,7 +58,8 @@ def move_home():
     stdout(f'{CE}H')
 
 @contextmanager
-def SaveCursor():  # add move to x,y
+def move_temporary(x=1, y=1):
+    move(x,y)
     try:
         save_position()
         yield
