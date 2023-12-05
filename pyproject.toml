@@ -3,9 +3,9 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "PyMenus"
-version = "0.2.0"
-description = "Flexible cli menu creator"
+name = "ultra-cli"
+version = "0.3.0"
+description = "CLI app creation made easier"
 license = {text = "LGPL"}
 readme = "README.md"
 requires-python = ">=3.10"
@@ -20,10 +20,10 @@ authors = [
 ]
 
 [tool.setuptools]
-packages = ["pymenus"]
+packages = ["ultra_cli"]
 
 [project.urls]
-"Homepage" = "https://github.com/Ramin-RX7/PyMenus"
-"Bug Tracker" = "https://github.com/Ramin-RX7/PyMenus/issues"
-documentation = "https://github.com/Ramin-RX7/PyMenus/#PyMenus"
+"Homepage" = "https://github.com/Ramin-RX7/Ultra-CLI"
+"Bug Tracker" = "https://github.com/Ramin-RX7/Ultra-CLI/issues"
+documentation = "https://github.com/Ramin-RX7/Ultra-CLI/#Ultra-CLI"
 # changelog = "https://github.com/Ramin-RX7/PyMenus/blob/master/CHANGELOG.md"
