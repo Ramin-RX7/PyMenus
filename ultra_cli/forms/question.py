@@ -6,11 +6,11 @@ from .validation import ValidationError,Validator
 
 class Question:
     _names = []
-    def __init__(self, name:str, prompt:str, default=None, validators:list[Validator]=[]):
+    def __init__(self, name:str, prompt:str, default=None, validators:list[Validator]=None):
         assert name not in self.__class__._names, "Name already exists"
         self.name = name
         self.prompt = prompt
-        self.validators = validators
+        self.validators = validators or []
         self.default = default
 
     @property
