@@ -103,7 +103,7 @@ class BaseMenu(BaseModel):
         """
         rx.clear()
         selected_option = self.get_user_input()
-        if selected_option == False:
+        if selected_option is False:
             return
         elif selected_option is None:
             exit()
