@@ -1,8 +1,8 @@
-# PyMenus
+# Ultra CLI
 
-`pymenus` is python module/library that generates flexible cli menus.
+`ultra-cli` is python module/library that generates flexible cli menus.
 
-The approach that is considered of an app using `pymenus` is as defined below:
+The approach that is considered of an app using `ultra-cli` is as defined below:
 
 - The app have a `main menu`
 - This `main menu` might have some sub-menus
@@ -27,7 +27,7 @@ Now if you navigate to `SubMenu_1`, you have 2 choices:
 - `myoption_1` which is an `Option` object that which will call a specified function when you navigate to it.
 
 ```python
-from pymenus import Menu,Option
+from ultra_cli import Menu,Option
 
 # Creating main menu
 main_menu = Menu(title="MainMenu")

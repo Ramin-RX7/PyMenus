@@ -1,4 +1,4 @@
-from pymenus import Menu,Option
+from ultra_cli import Menu,Option
 
 
 main_menu = Menu(title="MainMenu")
