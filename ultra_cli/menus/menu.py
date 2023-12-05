@@ -60,7 +60,7 @@ class Menu(BaseMenu):
             print("Options:")
             for i,option in enumerate(self.options, len(self.sub_menus)+1):
                 print(f"   {i}. {option.title}")
-        print(f"\n   0. Back\n")
+        print("\n   0. Back\n")
         return True
 
     def _prompt(self, _display_prompt_return) -> int|None:
