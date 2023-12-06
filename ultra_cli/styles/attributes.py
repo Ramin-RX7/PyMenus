@@ -38,6 +38,8 @@ class _Fore(_Colors, _attribute):
 
 
 class _Style(_attribute):
+    _prefix = "\x1b["
+
     RESET = 0
     BOLD = 1
     BRIGHT = 1
