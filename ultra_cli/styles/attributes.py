@@ -4,7 +4,7 @@ from .colors import _Colors
 
 
 class _attribute:
-    _prefix = None
+    _prefix : str = None
     _suffix = "m"
     def __getattribute__(self, __name: str):
         result = super().__getattribute__(__name)
@@ -16,16 +16,27 @@ class _attribute:
         return f"{self._prefix}{code}m"
 
     def as_ansi(self, value:int|str):
+        """Returns ANSI code of the given attribute
+
+        Args:
+            value (int | str): the value that needs to be converted to ANSI
+
+        Raises:
+            TypeError: When `value` argument is not `str` and `int`
+
+        Returns:
+            str: ANSI string of the given attribute
+        """
         if isinstance(value, str):
             if value.startswith(self._prefix):
                 return value
             else:
-                return getattr(self, value)
+                return getattr(self, value.upper())
                 # self._translate_color(super().__getattribute__(value))
         elif isinstance(value, int):
             return self._translate_color(value)
         else:
-            raise TypeError("`color` must be either of type `int` or `str`")
+            raise TypeError("`value` must be either of type `int` or `str`")
 
 
 
