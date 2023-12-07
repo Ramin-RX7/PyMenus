@@ -1,3 +1,9 @@
+"""
+Ultra-CLI forms validation module.
+
+Contains `Validator` and `ValidationError`
+"""
+
 from typing import Callable,Any
 
 

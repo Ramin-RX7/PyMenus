@@ -1,3 +1,7 @@
+"""
+ultra-cli form module which contains `Form` class.
+"""
+
 from typing import Any
 
 from .question import Question
