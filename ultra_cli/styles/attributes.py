@@ -1,3 +1,15 @@
+"""
+`styles.attributes` implements `Color`, `Fore`, `Back` and `Style`.
+
+Each of these are responsible to generate an ANSI code to be printed to terminal and\
+ change the output style.
+
+With using these you can manually change the terminal output style but if you want a\
+ better API, it's better to use `styles.print` and/or `styles.switch` functions and\
+ give them the argument needed (either a normal string or either the attributes of \
+ Fore, Back and Style)
+"""
+
 from .colors import _Colors
 
 

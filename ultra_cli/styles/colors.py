@@ -1,3 +1,7 @@
+"""
+This module contains `Color` class which implements all colors supported by ANSI terminals.
+"""
+
 from itertools import count
 
 

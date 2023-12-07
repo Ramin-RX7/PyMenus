@@ -1,3 +1,12 @@
+"""
+Ultra-CLI `styles.out` module implements functions used to change the terminal output style.
+
+Functions such as:
+- print
+- switch
+- switch_default (reset)
+"""
+
 import builtins as _builtins
 
 from .attributes import Fore,Back,Style
