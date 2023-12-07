@@ -1,3 +1,26 @@
+"""
+`cursor` is a module that implements different functionalities to interact with\
+ terminal cursor.
+
+You can move the cursor in a single direction using:
+- up
+- down
+- forward
+- back
+
+You can move the cursor in both axis using:
+- move
+- move_rel
+- move_home
+
+You can save and use the previously saved cursor position using:
+- save_position
+- restore_postition
+- move_temporary
+
+and you can also clear the terminal using `clear_terminal` fuctions.
+"""
+
 import os
 import sys
 from contextlib import contextmanager
