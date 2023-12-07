@@ -1,3 +1,7 @@
+"""
+This module contains the `Option` class which itself is a class to create end points in menus.
+"""
+
 from typing import Any,Callable
 
 from pydantic import BaseModel

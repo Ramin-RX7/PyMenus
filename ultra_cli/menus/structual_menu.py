@@ -1,3 +1,8 @@
+"""
+Ultra-CLI `menus.structureal_menu` module contains `StructuralMenu` class and it's \
+sub-parts (BACK_BUTTON, SEPARATOR) which are used to create a structure based menu.
+"""
+
 from typing import Callable,Any,Optional
 
 import rx7 as rx
