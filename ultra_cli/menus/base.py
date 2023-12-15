@@ -1,3 +1,8 @@
+"""
+`menus.base` module defines `BaseMenu` which is the base (Abstract) class for all \
+classes that are a menu.
+"""
+
 from abc import abstractmethod
 from typing import Any,final
 

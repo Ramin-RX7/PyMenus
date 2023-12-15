@@ -1,3 +1,12 @@
+"""
+Ultra-CLI `styles.out` module implements functions used to change the terminal output style.
+
+Functions such as:
+- print
+- switch
+- switch_default (reset)
+"""
+
 import builtins as _builtins
 
 from .attributes import Fore,Back,Style
@@ -6,14 +15,13 @@ from .attributes import Fore,Back,Style
 
 
 def print(*values, color=..., background=..., style=..., sep=" ", end='\n') -> None:
-    """prints out the given values decorated with given color/bg/style.
-
-    (You can get list of all colors and styles with: $ python -m rx7 --colors)
+    """
+    prints out the given values decorated with given color, backgroundg and style.
 
     Args:
-        color (str, optional): color to use when printing. Defaults to 'default'.
-        BG (str, optional): background color of output. Defaults to 'default'.
-        style (_type_, optional): style of output text. Defaults to None.
+        color (str, optional): color to use when printing.
+        background (str, optional): background color of output.
+        style (_type_, optional): style of output text.
         end (str, optional): last part of print. Defaults to '\n'.
         sep (str, optional): Separator of values in output. Defaults to " ".
     """
@@ -30,6 +38,13 @@ def print(*values, color=..., background=..., style=..., sep=" ", end='\n') -> N
 
 
 def switch(*, color=..., BG=..., style=...) -> None:
+    """Switches the style of the terminal with given values
+
+    Args:
+        color (str, optional): forecolor of the terminal output
+        BG (str, optional): background color of the terminal output
+        style (str, optional): style of the terinal output
+    """
     ansi = ""
     if style != ...:
         ansi += f"{Style.as_ansi(style)}"
@@ -41,5 +56,6 @@ def switch(*, color=..., BG=..., style=...) -> None:
 
 
 def switch_default() -> None:
+    """Switches the terminal style back to it's default"""
     _builtins.print(f'{Style.RESET}', end='')
 reset = switch_default

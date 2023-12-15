@@ -1,3 +1,7 @@
+"""
+Ultra-CLI `menus.menu` module includes `Menu` class which is a simple class to create menus.
+"""
+
 from typing import Optional
 
 import rx7 as rx
