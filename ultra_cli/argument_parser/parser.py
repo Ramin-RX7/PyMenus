@@ -153,6 +153,7 @@ class ArgumentParser:
         results = {}
         arg_counter = {name:arg.maximum for name,arg in self.args.items()}
         to_parse_args = {name:[] for name in self.args.keys()}
+        # to_parse_args = {}
         while i < len(args):
             arg = args[i]
             if name:=self._check_acceptable(arg):
@@ -173,12 +174,24 @@ class ArgumentParser:
                     to_send = args[i+1]
                 else:
                     to_send = args[i:j]
-                # results[name] = self.args[name].parse(to_send)
+                # to_parse_args.setdefault(name, [])
                 to_parse_args[name].append(to_send)
                 i = j
+            elif not self._config.allow_unknown:
+                raise ValidationError(f"Unknown argument `{arg}` found")
+            else:
+                ...
 
         for arg_name,values in to_parse_args.items():
+            if not values:
+                default = self.args[arg_name].default
+                if default != Ellipsis:
+                    results[arg_name] = default
+                    continue
+                else:
+                    raise ValidationError(f"Argument `{arg_name}` is required")
             results[arg_name] = self.args[arg_name].parse(*values)
+
 
         return self.validate_args(results)
 
