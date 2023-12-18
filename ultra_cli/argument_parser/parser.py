@@ -103,3 +103,27 @@ class ArgumentParser:
             )
 
     def _validate(self, args):
+        return
+
+    def get_acceptable_arg_names(self):
+        acceptables : dict[str, list[str]] = {}
+        for arg_name,arg in self.args.items():
+            acceptables[arg_name] = [f"--{arg.name}"]
+            if arg.abrev:
+                i = 0
+                abrv = f"-{arg.name[i]}"
+                while abrv in acceptables:
+                    i += 1
+                    abrv += arg[i]
+                acceptables[arg_name].append(abrv)
+        return acceptables
+
+    def check_acceptable(self, name, acceptables=None):
+        acceptables = acceptables or self.get_acceptable_arg_names()
+        # return name in [*acceptables.keys(), *(itertools.chain(*acceptables.values()))]
+        # if name in acceptables.keys():
+        #     return name
+        for arg_name,abrvs in acceptables.items():
+            if name in abrvs:
+                return arg_name
+
