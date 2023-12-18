@@ -136,19 +136,14 @@ class ArgumentParser:
                 acceptables[arg_name].append(abrv)
         return acceptables
 
-    def check_acceptable(
-            self,
-            name:str,
-            acceptables:dict[str, list[str]]|None=None
-            ) -> str|None:
+    def _check_acceptable(self, name:str) -> str|None:
         """
         Checks if a given name in command line is acceptable for any argument and \
         returns it's name.
 
         If name is not found, returns `None`
         """
-        acceptables = acceptables or self.get_acceptable_arg_names()
-        for arg_name,abrvs in acceptables.items():
+        for arg_name,abrvs in self._acceptables.items():
             if name in abrvs:
                 return arg_name
         return None
@@ -156,11 +151,16 @@ class ArgumentParser:
     def parse_arguments(self, args:list[str]=sys.argv[1:]):
         i = 0
         results = {}
-        acceptables = self.get_acceptable_arg_names()
+        arg_counter = {name:arg.maximum for name,arg in self.args.items()}
+        to_parse_args = {name:[] for name in self.args.keys()}
         while i < len(args):
             arg = args[i]
-            if name:=self.check_acceptable(arg, acceptables):
-                acceptables.pop(name)
+            if name:=self._check_acceptable(arg):
+                if arg_counter[name] <= 0:
+                    raise ValidationError(
+                        f"You can use `{name}` option only `{self.args[name].maximum}` times."
+                    )
+                arg_counter[name] -= 1
                 j = i+1
                 while  j<len(args)  and  not args[j].startswith("-"):
                     j += 1
@@ -173,8 +173,12 @@ class ArgumentParser:
                     to_send = args[i+1]
                 else:
                     to_send = args[i:j]
-                results[name] = self.args[name].parse(to_send)
+                # results[name] = self.args[name].parse(to_send)
+                to_parse_args[name].append(to_send)
                 i = j
+
+        for arg_name,values in to_parse_args.items():
+            results[arg_name] = self.args[arg_name].parse(*values)
 
         return self.validate_args(results)
 
