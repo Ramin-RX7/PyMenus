@@ -87,20 +87,28 @@ class ArgumentParser:
         name = ""
         description = ""
         abrev = True
+        allow_unknown = True
 
     def __init__(self):
         self.args : dict[str,Option] = {}
         args = self.__annotations__
         for arg_name,arg_type in args.items():
-            if hasattr(self, arg_name) and isinstance(getattr(self, arg_name), Option):
-                self.args.append(getattr(self, arg_name))
-                continue
+            if hasattr(self, arg_name):
+                attr = getattr(self, arg_name)
+                if isinstance(attr, Option):
+                    self.args.append(attr)
+                    continue
+                default = attr
+            else:
+                default = ...
             self.args[arg_name] = Option(
                 name = arg_name,
-                validator = arg_type,
                 abrev = self._config.abrev,
-                positional = True if get_origin(arg_type)==Positional else False
+                validator = arg_type,
+                positional = True if get_origin(arg_type)==Positional else False,
+                default = default
             )
+        self._acceptables = self._get_acceptable_arg_names()
 
     def validate_args(self, args:dict[str,Any]):
         """For more validation on user given args you can override this method.
@@ -119,7 +127,7 @@ class ArgumentParser:
         """
         return args
 
-    def get_acceptable_arg_names(self) -> dict[str,list[str]]:
+    def _get_acceptable_arg_names(self) -> dict[str,list[str]]:
         """
         Returns the dictionary of argument names and acceptable argument in \
         command line for them
