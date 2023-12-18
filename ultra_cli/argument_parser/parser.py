@@ -102,8 +102,22 @@ class ArgumentParser:
                 positional = True if get_origin(arg_type)==Positional else False
             )
 
-    def _validate(self, args):
-        return
+    def validate_args(self, args:dict[str,Any]):
+        """For more validation on user given args you can override this method.
+
+        After the type validation on args, this method will be called with giving the \
+        dictionary of options as `args` parameter.
+
+        in `parse_arguments` all `ValidationError` and `AssertionErrors` caused by \
+        this method will be handled and raised as `ValidationError`.
+
+        Args:
+            args (dict[str:Any]): dictionary of parsed arguments
+
+        Return:
+            it must return the validated dictionary of args
+        """
+        return args
 
     def get_acceptable_arg_names(self):
         acceptables : dict[str, list[str]] = {}
