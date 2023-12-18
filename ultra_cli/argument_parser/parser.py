@@ -1,13 +1,13 @@
 import sys
-from types import GenericAlias
-from typing import Literal,get_origin,Callable,Any,Union
+from types import GenericAlias,UnionType
+from typing import Literal,get_origin,Callable,Any,_LiteralGenericAlias
 
 
 
 
 class Positional:
     def __class_getitem__(cls, item):
-        return (cls, item)
+        return GenericAlias(cls, item)
 
 
 class ValidationError(Exception):
@@ -43,10 +43,10 @@ class Option:
         if isinstance(self.validator, GenericAlias):
             return
 
-        elif isinstance(self.validator, Union):
+        elif isinstance(self.validator, UnionType):
             return
 
-        elif isinstance(self.validator, Literal):
+        elif isinstance(self.validator, _LiteralGenericAlias):
             return
 
         else:
