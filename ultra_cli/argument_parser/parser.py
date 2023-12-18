@@ -141,3 +141,29 @@ class ArgumentParser:
             if name in abrvs:
                 return arg_name
 
+    def parse_arguments(self, args:list[str]=sys.argv[1:]):
+        i = 0
+        results = {}
+        acceptables = self.get_acceptable_arg_names()
+        while i < len(args):
+            arg = args[i]
+            if name:=self.check_acceptable(arg, acceptables):
+                acceptables.pop(name)
+                j = i+1
+                while  j<len(args)  and  not args[j].startswith("-"):
+                    j += 1
+                if i+1 == j:
+                    if self.args[name].validator == bool:
+                        to_send = True
+                    else:
+                        raise ValidationError(f"`{name}` option needs an argument")
+                elif i+2 == j:
+                    to_send = args[i+1]
+                else:
+                    to_send = args[i:j]
+                results[name] = self.args[name].parse(to_send)
+                i = j
+
+        return self.validate_args(results)
+
+
