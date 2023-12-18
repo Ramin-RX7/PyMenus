@@ -119,7 +119,11 @@ class ArgumentParser:
         """
         return args
 
-    def get_acceptable_arg_names(self):
+    def get_acceptable_arg_names(self) -> dict[str,list[str]]:
+        """
+        Returns the dictionary of argument names and acceptable argument in \
+        command line for them
+        """
         acceptables : dict[str, list[str]] = {}
         for arg_name,arg in self.args.items():
             acceptables[arg_name] = [f"--{arg.name}"]
@@ -132,14 +136,22 @@ class ArgumentParser:
                 acceptables[arg_name].append(abrv)
         return acceptables
 
-    def check_acceptable(self, name, acceptables=None):
+    def check_acceptable(
+            self,
+            name:str,
+            acceptables:dict[str, list[str]]|None=None
+            ) -> str|None:
+        """
+        Checks if a given name in command line is acceptable for any argument and \
+        returns it's name.
+
+        If name is not found, returns `None`
+        """
         acceptables = acceptables or self.get_acceptable_arg_names()
-        # return name in [*acceptables.keys(), *(itertools.chain(*acceptables.values()))]
-        # if name in acceptables.keys():
-        #     return name
         for arg_name,abrvs in acceptables.items():
             if name in abrvs:
                 return arg_name
+        return None
 
     def parse_arguments(self, args:list[str]=sys.argv[1:]):
         i = 0
