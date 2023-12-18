@@ -79,3 +79,27 @@ class Option:
     def __repr__(self):
         # return f"{self.__class__.__name__}({self.name})"
         return f"{self.name}"
+
+
+
+class ArgumentParser:
+    class _config:
+        name = ""
+        description = ""
+        abrev = True
+
+    def __init__(self):
+        self.args : dict[str,Option] = {}
+        args = self.__annotations__
+        for arg_name,arg_type in args.items():
+            if hasattr(self, arg_name) and isinstance(getattr(self, arg_name), Option):
+                self.args.append(getattr(self, arg_name))
+                continue
+            self.args[arg_name] = Option(
+                name = arg_name,
+                validator = arg_type,
+                abrev = self._config.abrev,
+                positional = True if get_origin(arg_type)==Positional else False
+            )
+
+    def _validate(self, args):
