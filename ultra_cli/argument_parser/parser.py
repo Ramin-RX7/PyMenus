@@ -1,7 +1,9 @@
 import sys
 from types import GenericAlias,UnionType
-from typing import Literal,get_origin,Callable,Any,_LiteralGenericAlias
+from typing import Literal,get_origin,Callable,Any,_LiteralGenericAlias, get_args
 
+from exceptions import ValidationError
+from complex_handlers import parse_union,parse_literal
 
 
 
@@ -10,8 +12,15 @@ class Positional:
         return GenericAlias(cls, item)
 
 
-class ValidationError(Exception):
-    pass
+
+
+
+
+def check_none_default(arg_type):
+    if isinstance(arg_type, UnionType):
+        if type(None) in get_args(arg_type):
+            return True
+    return False
 
 
 
@@ -100,7 +109,7 @@ class ArgumentParser:
                     continue
                 default = attr
             else:
-                default = ...
+                default = None if check_none_default(arg_type) else ...
             self.args[arg_name] = Option(
                 name = arg_name,
                 abrev = self._config.abrev,
@@ -140,7 +149,7 @@ class ArgumentParser:
                 abrv = f"-{arg.name[i]}"
                 while abrv in acceptables:
                     i += 1
-                    abrv += arg[i]
+                    abrv += arg.name[i]
                 acceptables[arg_name].append(abrv)
         return acceptables
 
