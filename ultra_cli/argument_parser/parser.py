@@ -204,9 +204,8 @@ class ArgumentParser:
 
         for arg_name,values in to_parse_args.items():
             if not values:
-                default = self.args[arg_name].default
-                if default != Ellipsis:
-                    results[arg_name] = default
+                if not self.args[arg_name].required:
+                    results[arg_name] = self.args[arg_name].default
                     continue
                 else:
                     raise ValidationError(f"Argument `{arg_name}` is required")
