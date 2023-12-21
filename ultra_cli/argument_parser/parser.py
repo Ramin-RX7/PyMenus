@@ -23,6 +23,13 @@ def check_none_default(arg_type):
     return False
 
 
+_COMPLEX_HANDLERS = {
+    # GenericAlias : ,
+    _LiteralGenericAlias : parse_literal,
+    UnionType : parse_union,
+}
+
+
 
 
 class Option:
@@ -49,15 +56,8 @@ class Option:
         if len(values) > self.maximum:
             raise ValidationError(f"You can use `{self.name}` option only `{self.maximum}` times.")
 
-        if isinstance(self.validator, GenericAlias):
-            return
-
-        elif isinstance(self.validator, UnionType):
-            return
-
-        elif isinstance(self.validator, _LiteralGenericAlias):
-            return
-
+        if isinstance(self.validator, tuple(_COMPLEX_HANDLERS.keys())):
+            return _COMPLEX_HANDLERS[type(self.validator)](self.name, self.validator, values)
         else:
             validator = self.validator
 
