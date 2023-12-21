@@ -197,7 +197,10 @@ class ArgumentParser:
             elif not self._config.allow_unknown:
                 raise ValidationError(f"Unknown argument `{arg}` found")
             else:
-                ...
+                j = i+1
+                while  j<len(args)  and  not args[j].startswith("-"):
+                    j += 1
+                i = j
 
         for arg_name,values in to_parse_args.items():
             if not values:
