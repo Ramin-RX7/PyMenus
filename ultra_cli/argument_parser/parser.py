@@ -3,33 +3,14 @@ from types import GenericAlias,UnionType
 from typing import get_origin,Callable,Any,_LiteralGenericAlias, get_args
 
 from .exceptions import ValidationError
-from .complex_handlers import parse_union,parse_literal
+from .complex_handlers import COMPLEX_HANDLERS
+from .utils import check_none_default, clean_class_dict
 
 
 
 class Positional:
     def __class_getitem__(cls, item):
         return GenericAlias(cls, item)
-
-
-
-
-
-
-def check_none_default(arg_type):
-    if isinstance(arg_type, UnionType):
-        if type(None) in get_args(arg_type):
-            return True
-    return False
-
-
-_COMPLEX_HANDLERS = {
-    # GenericAlias : ,
-    _LiteralGenericAlias : parse_literal,
-    UnionType : parse_union,
-}
-
-
 
 
 class Option:
@@ -56,8 +37,8 @@ class Option:
         if len(values) > self.maximum:
             raise ValidationError(f"You can use `{self.name}` option only `{self.maximum}` times.")
 
-        if isinstance(self.validator, tuple(_COMPLEX_HANDLERS.keys())):
-            return _COMPLEX_HANDLERS[type(self.validator)](self.name, self.validator, values)
+        if isinstance(self.validator, tuple(COMPLEX_HANDLERS.keys())):
+            return COMPLEX_HANDLERS[type(self.validator)](self.name, self.validator, values)
         else:
             validator = self.validator
 

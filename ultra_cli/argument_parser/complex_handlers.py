@@ -25,3 +25,10 @@ def parse_literal(arg_name:str, arg_type:_LiteralGenericAlias, values:tuple):
             raise ValidationError(f"argument `{arg_name}` only accepts one of `{acceptables}`")
         results.append(value)
     return results if len(results) > 1 else results[0]
+
+
+COMPLEX_HANDLERS = {
+    # GenericAlias : ,
+    _LiteralGenericAlias : parse_literal,
+    UnionType : parse_union,
+}
