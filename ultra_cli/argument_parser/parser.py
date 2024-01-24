@@ -180,7 +180,7 @@ class ArgumentParser:
                 # to_parse_args.setdefault(name, [])
                 to_parse_args[name].append(to_send)
                 i = j
-            elif not self._config.allow_unknown:
+            elif not self.Config["allow_unknown"]:
                 raise ValidationError(f"Unknown argument `{arg}` found")
             else:
                 j = i+1
@@ -196,6 +196,5 @@ class ArgumentParser:
                 else:
                     raise ValidationError(f"Argument `{arg_name}` is required")
             results[arg_name] = self.args[arg_name].parse(*values)
-
 
         return self.validate_args(results)
