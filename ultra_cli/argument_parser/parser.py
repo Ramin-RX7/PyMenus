@@ -71,15 +71,20 @@ class Option:
         return f"{self.name}"
 
 
+class DefaultConfig:
+    name = ""
+    description = ""
+    abrev = True
+    allow_unknown = True
+
 
 class ArgumentParser:
-    class _config:
-        name = ""
-        description = ""
-        abrev = True
-        allow_unknown = True
-
+    Config = DefaultConfig
     def __init__(self):
+        self.Config = {
+            **clean_class_dict(DefaultConfig),
+            **clean_class_dict(self.Config),
+        }
         self.args : dict[str,Option] = {}
         args = self.__annotations__
         for arg_name,arg_type in args.items():
