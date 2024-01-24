@@ -98,7 +98,7 @@ class ArgumentParser:
                 default = None if check_none_default(arg_type) else ...
             self.args[arg_name] = Option(
                 name = arg_name,
-                abrev = self._config.abrev,
+                abrev = self.Config["abrev"],
                 validator = arg_type,
                 positional = True if get_origin(arg_type)==Positional else False,
                 default = default
@@ -199,5 +199,3 @@ class ArgumentParser:
 
 
         return self.validate_args(results)
-
-
