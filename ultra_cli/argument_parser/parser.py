@@ -1,9 +1,9 @@
 import sys
 from types import GenericAlias,UnionType
-from typing import Literal,get_origin,Callable,Any,_LiteralGenericAlias, get_args
+from typing import get_origin,Callable,Any,_LiteralGenericAlias, get_args
 
-from exceptions import ValidationError
-from complex_handlers import parse_union,parse_literal
+from .exceptions import ValidationError
+from .complex_handlers import parse_union,parse_literal
 
 
 

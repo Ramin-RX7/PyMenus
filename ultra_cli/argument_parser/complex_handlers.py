@@ -1,7 +1,7 @@
 from types import UnionType,GenericAlias
 from typing import get_origin,get_args,_LiteralGenericAlias
 
-from exceptions import ValidationError
+from .exceptions import ValidationError
 
 
 
