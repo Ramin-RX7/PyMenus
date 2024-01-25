@@ -1,6 +1,6 @@
 import sys
-from types import GenericAlias,UnionType
-from typing import get_origin,Callable,Any,_LiteralGenericAlias, get_args
+from types import GenericAlias
+from typing import get_origin,Callable,Any
 
 from .exceptions import ValidationError
 from .complex_handlers import COMPLEX_HANDLERS
@@ -8,9 +8,11 @@ from .utils import check_none_default, clean_class_dict
 
 
 
+
 class Positional:
     def __class_getitem__(cls, item):
         return GenericAlias(cls, item)
+
 
 
 class Option:
@@ -71,11 +73,13 @@ class Option:
         return f"{self.name}"
 
 
+
 class DefaultConfig:
     name = ""
     description = ""
     abrev = True
     allow_unknown = True
+
 
 
 class ArgumentParser:
