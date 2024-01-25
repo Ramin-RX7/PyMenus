@@ -19,8 +19,12 @@ class _attribute:
     _prefix : str = None
     _suffix = "m"
     def __getattribute__(self, __name: str):
+        if __name == "_prefix":
+            return super().__getattribute__(__name)
         result = super().__getattribute__(__name)
-        return self._translate_color(result)
+        if isinstance(result, (str,int)):
+            return self._translate_color(result)
+        return result
 
     __getitem__ = __call__ = __getattribute__
 
