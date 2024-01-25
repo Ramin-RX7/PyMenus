@@ -16,6 +16,13 @@ class Positional:
 
 
 class Option:
+    """
+    `Option` class is used to validate and handle each argument of a ArgumentParser.
+
+    All arguments will be transformed to an `Option` eventually in the ArgumentParser constructor.
+
+    However you can directly use it for more freedom on an argument control during parse.
+    """
     def __init__(self,
         name : str,
         validator : Callable,
@@ -36,6 +43,12 @@ class Option:
 
 
     def parse(self, *values):
+        """
+        When an argument needs to be parsed, all of the given values in the terminal\
+            will be sent to this function to be validated/cleaned.
+
+        All complex type handlings and validators are done in this method.
+        """
         if len(values) > self.maximum:
             raise ValidationError(f"You can use `{self.name}` option only `{self.maximum}` times.")
 
@@ -83,6 +96,27 @@ class DefaultConfig:
 
 
 class ArgumentParser:
+    """
+    This class is used to be inherited by user classes to create CLI.
+
+    All the needed arguments must be provided as class attributes with type annotations.
+
+    If an attribute does not provide a default it means they are required.
+
+    Example:
+
+    ```python
+    class MyParser(ArgumentParser):
+        name : str
+        age : int = 18
+
+    parser = MyParser()
+    args = parser.parse_arguments()
+    # This returns a dictionary of parsed arguments
+    ```
+
+    Check more in the examples directory
+    """
     Config = DefaultConfig
     def __init__(self):
         self.Config = {
@@ -156,6 +190,22 @@ class ArgumentParser:
         return None
 
     def parse_arguments(self, args:list[str]=sys.argv[1:]):
+        """This method is used to parse all given argument and return a dictioanry of \
+            the arguments and their corresponding value
+
+        Args:
+            args (list[str]): list of given arguments. Defaults to sys.argv[1:].
+
+        Raises:
+            ValidationError: this error may be raised due to each of these cases:
+            - an option be provided more than the maximum times it has defined
+            - if an option needs a value (can not be used as a flag)
+            - unknown argument be found (and self.Config.allow_unknown is False)
+            - if an argument is required
+
+        Returns:
+            dict[str,Any]: parsed arguments as a dictionary
+        """
         i = 0
         results = {}
         arg_counter = {name:arg.maximum for name,arg in self.args.items()}
