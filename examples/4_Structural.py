@@ -1,4 +1,4 @@
-from ultra_cli import Menu,StructuralMenu,Option,BACK_BUTTON,SEPARATOR
+from ultra_cli.menus import Menu,StructuralMenu,Option,BACK_BUTTON,SEPARATOR
 
 
 

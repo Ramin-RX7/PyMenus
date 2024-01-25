@@ -1,4 +1,4 @@
-from ultra_cli import Menu
+from ultra_cli.menus import Menu
 
 
 main_menu = Menu(title="MainMenu")
