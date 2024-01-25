@@ -1,4 +1,4 @@
-from pymenus import cursor
+from ultra_cli import cursor
 
 
 

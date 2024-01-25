@@ -1,6 +1,6 @@
 import time
 
-from pymenus import cursor
+from ultra_cli import cursor
 
 
 
@@ -9,7 +9,7 @@ print("2. This text will be overridden")
 
 cursor.up(2)
 
-time.sleep(1)
+time.sleep(2)
 
 print("this is the new content of line 1")
 print("this is the new content of line 2")
