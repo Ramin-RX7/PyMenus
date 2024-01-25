@@ -10,7 +10,7 @@ license = {text = "LGPL"}
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "rx7","pydantic"
+    "pydantic"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
