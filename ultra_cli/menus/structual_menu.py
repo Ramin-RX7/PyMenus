@@ -102,7 +102,7 @@ class StructuralMenu(BaseMenu):
         if isinstance(selected_option, BaseMenu):
             return (selected_option, {})
         elif isinstance(selected_option, Option):
-            return (selected_option, selected_option.kwargs)
+            return (selected_option.function, selected_option.kwargs)
 
 
     def _generate_user_input_structure(self):
