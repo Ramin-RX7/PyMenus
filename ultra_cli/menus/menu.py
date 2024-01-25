@@ -76,7 +76,7 @@ class Menu(BaseMenu):
             ))
         except (EOFError, KeyboardInterrupt):
             return None
-        return choice
+        return choice or False
 
     def _handle_input(self, _display_prompt_return, number:int) -> tuple[BaseMenu|Option, dict] | None:
         if number == 0:

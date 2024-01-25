@@ -90,7 +90,7 @@ class StructuralMenu(BaseMenu):
             ))
         except (EOFError, KeyboardInterrupt):
             return None
-        return choice
+        return choice or False
 
     def _handle_input(self, input_structure:dict[int,Any], number:int) -> tuple[Callable|BaseMenu, dict] | None:
         if number is None:
