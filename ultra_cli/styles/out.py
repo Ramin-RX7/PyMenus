@@ -31,7 +31,7 @@ def print(*values, color=..., background=..., style=..., sep=" ", end='\n') -> N
 
     values = map(str, values)
 
-    output = f"{style}{color}{background}{sep.join(values)}{end}"
+    output = f"{style}{color}{background}{sep.join(values)}{end}{Style.RESET}"
 
     _builtins.print(output, end="")
 
