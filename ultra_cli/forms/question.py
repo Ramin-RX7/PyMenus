@@ -5,6 +5,7 @@ from users easily with less affort
 
 from typing import Any
 
+from ..styles import print
 from .validation import ValidationError,Validator
 
 
@@ -79,6 +80,6 @@ class Question:
                 for validator in self.validators:
                     validated_value = validator(user_input, validated_value, data)
             except ValidationError as e:
-                print(f"{type(e).__name__}:  {str(e)}")
+                print(f"{str(e)}", color="red")
             else:
                 return validated_value
