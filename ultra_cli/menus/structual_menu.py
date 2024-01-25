@@ -3,11 +3,12 @@ Ultra-CLI `menus.structureal_menu` module contains `StructuralMenu` class and it
 sub-parts (BACK_BUTTON, SEPARATOR) which are used to create a structure based menu.
 """
 
+import getpass
 from typing import Callable,Any,Optional
 
-import rx7 as rx
 from pydantic import validator
 
+from ..utils import choice_input
 from .base import BaseMenu
 from .option import Option
 
@@ -62,7 +63,7 @@ class StructuralMenu(BaseMenu):
     def _display_prompt(self) -> list[Any]:
         if not self.structure:
             print("Empty Menu")
-            rx.getpass("\nPress enter to continue...")
+            getpass.getpass("\nPress enter to continue...")
             return False
         if not all([isinstance(section,(BaseMenu,Option,str,int)) for section in self.structure]):
             raise TypeError(f"Wrong value in menu structure ({self.title})")
@@ -83,11 +84,10 @@ class StructuralMenu(BaseMenu):
     def _prompt(self, input_structure:dict=None) -> int|None:
         print()
         try:
-            choice = rx.io.selective_input(
+            choice = int(choice_input(
                 self.prompt_text,
-                choices = [str(i) for i in input_structure.keys()],
-                post_action = int
-            )
+                [str(i) for i in input_structure.keys()]
+            ))
         except (EOFError, KeyboardInterrupt):
             return None
         return choice

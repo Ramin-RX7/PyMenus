@@ -3,12 +3,13 @@
 classes that are a menu.
 """
 
+import getpass
 from abc import abstractmethod
 from typing import Any,final
 
-import rx7 as rx
 from pydantic import BaseModel
 
+from ..cursor import clear_terminal
 from .option import Option
 
 
@@ -106,7 +107,7 @@ class BaseMenu(BaseModel):
                 if arguments of the given sub-menus/option have been modified during runtime,
                 you can pass them to this method
         """
-        rx.clear()
+        clear_terminal()
         selected_option = self.get_user_input()
         if selected_option is False:
             return
@@ -118,9 +119,9 @@ class BaseMenu(BaseModel):
             to_call.execute(**func_args)
         # elif isinstance(to_call, Option):
         elif callable(to_call):
-            rx.cls()
+            clear_terminal()
             to_call(**func_args)
-            rx.getpass("\nPress enter to continue...")
+            getpass.getpass("\nPress enter to continue...")
         else:
             print(to_call)
             raise TypeError("Invalid type returned by `get_user_input()`")

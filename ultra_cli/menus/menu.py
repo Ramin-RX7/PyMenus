@@ -2,11 +2,12 @@
 Ultra-CLI `menus.menu` module includes `Menu` class which is a simple class to create menus.
 """
 
+import getpass
 from typing import Optional
 
-import rx7 as rx
 from pydantic import validator
 
+from ..utils import choice_input
 from .base import BaseMenu
 from .option import Option
 
@@ -54,7 +55,7 @@ class Menu(BaseMenu):
     def _display_prompt(self) -> bool:
         if not any([self.sub_menus,self.options]):
             print("Empty Menu")
-            rx.getpass("\nPress enter to continue...")
+            getpass.getpass("\nPress enter to continue...")
             return False
         if self.sub_menus:
             print("Menus:")
@@ -69,11 +70,10 @@ class Menu(BaseMenu):
 
     def _prompt(self, _display_prompt_return) -> int|None:
         try:
-            choice = rx.io.selective_input(
+            choice = int(choice_input(
                 self.prompt_text,
-                choices = [str(i) for i in range(len(self.sub_menus)+len(self.options)+1)],
-                post_action = int
-            )
+                [str(i) for i in range(len(self.sub_menus)+len(self.options)+1)]
+            ))
         except (EOFError, KeyboardInterrupt):
             return None
         return choice
