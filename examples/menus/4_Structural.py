@@ -14,7 +14,8 @@ def change_name_function(new_name):
 privacy_menu = StructuralMenu(title="Privacy", structure=[
     "List of Available options:",
     Option(title="Change name", function=change_name_function, kwargs={"new_name":"MY_NEW_NAME"}),
-    Option(title="Change password", function=change_password_function)
+    Option(title="Change password", function=change_password_function),
+    BACK_BUTTON
 ])
 
 
