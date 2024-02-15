@@ -1,65 +1,35 @@
 # Ultra CLI
 
-`ultra-cli` is python module/library that generates flexible cli menus.
+`ultra-cli` is python library that helps interacting with terminal console.
 
-The approach that is considered of an app using `ultra-cli` is as defined below:
+`Ultra-CLI` consists of multiple modules each responsible for their own corresponding topic.
 
-- The app have a `main menu`
-- This `main menu` might have some sub-menus
-- As each sub-menu can also have multiple sub-menus
-- An end point for each menu where user can select what should happen next (excluding sub-menus), is called `Option`
-- `Option` is a function that will be called when the user selects it in a menu.
+Currently `Ultra-CLI` contains:
+- `argument_parser`: CLI creation using classes
+- `forms`: easily making forms
+- `menus`: interactive menus with auto navigation
+- `styles`: style the terminal text
+- `ultra_cli`: which consists of any other utilities which do not belong to any specific topic
 
-## Demonstration of how this works
 
-    MainMenu/
-    ├─── SubMenu_1/
-    │   ├─── anotherSubMenu/
-    │   └─── myoption_1
-    └─── SubMenu_2/
-        ├─── myoption_2
-        └─── myoption_3
+## Installation
 
-In the example above, as you can see, App starts with a menu called `MainMenu`.\
-This contains 2 sub-menus called `SubMenu_1` and `SubMenu_2`. This means you can navigate to one of these menus when you are in `MainMenu`.\
-Now if you navigate to `SubMenu_1`, you have 2 choices:
-- `anotherSubMenu` which is a sub-menu (empty)
-- `myoption_1` which is an `Option` object that which will call a specified function when you navigate to it.
-
-```python
-from ultra_cli import Menu,Option
-
-# Creating main menu
-main_menu = Menu(title="MainMenu")
-# Creating other menus
-privacy_menu = Menu(title="Privacy")
-data_menu = Menu(title="Data and Storage")
+```sh
+pip install ultra-cli
 ```
 
-```python
-# functions of our Options
-def change_password_function():
-    print("password can not be changed")
-def change_name_function(new_name):
-    print(f"your new name is: {new_name}")
+### upgrade
 
-# Defining the Options
-change_password = Option(title="Change password", function=change_password_function)
-change_name = Option(title="Change name", function=change_name_function, kwargs={"new_name":"MY_NEW_NAME"})
-
-# Adding declared options to the privacy_menu options
-privacy_menu.add_options(
-    change_name,
-    change_password
-)
+```sh
+pip install --upgrade ultra-cli
 ```
 
-```python
-# Adding privacy_menu and data_menu to main_menu
-main_menu.add_submenus(privacy_menu, data_menu)
 
-# Start of the app
-main_menu.execute()
-```
+## Documentation
 
-<!-- ## API docs -->
+For now the documentation of `Ultra-CLI` is on github wiki. Check it out [here](https://github.com/Ramin-RX7/ultra-cli/wiki)
+
+
+## License
+
+This project is licensed under `LGPL-2.1 license`. Read complete license [here](./LICENSE)
